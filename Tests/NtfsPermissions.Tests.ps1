@@ -111,6 +111,16 @@ Describe 'Get-NtfsPermission' {
 
     BeforeAll {
         $root = Join-Path $TestDrive 'root'
+        $null = New-Item -Path $root -ItemType Directory -Force
+
+        # Definierte Ausgangs-ACL (geschützt, automatische Vererbung): Ist die DACL des Temp-Ordners
+        # ohne AI-Flag (z. B. auf GitHub-Runnern), macht Set-Acl auf 'a' aus den geerbten Einträgen
+        # von 'a\b' explizite Kopien - der Test hinge sonst von der Umgebung ab.
+        $me = [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value
+        $rootAcl = Get-Acl -LiteralPath $root
+        $rootAcl.SetSecurityDescriptorSddlForm("D:PAI(A;OICI;FA;;;SY)(A;OICI;FA;;;BA)(A;OICI;FA;;;$me)", 'Access')
+        Set-Acl -LiteralPath $root -AclObject $rootAcl
+
         $null = New-Item -Path (Join-Path $root 'a\b') -ItemType Directory -Force
         $null = New-Item -Path (Join-Path $root 'c') -ItemType Directory -Force
         Set-Content -Path (Join-Path $root 'a\datei.txt') -Value 'x'
