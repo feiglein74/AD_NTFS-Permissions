@@ -78,6 +78,25 @@ Fehlerdetails werden vollständig durchgereicht (`$_.Exception.Message`). Ein Le
 
 Die Rechte werden aus dem Binärformat (`RawSecurityDescriptor`) berechnet, weil das zuverlässig ist. Für die Aufschlüsselung wird der SDDL-String aber zusätzlich selbst zerlegt, damit Original-Tokens wie `BU` oder `DCLCRPCR` sichtbar bleiben. Der Parser zählt Klammern, damit bedingte ACEs mit verschachtelten Klammern korrekt bleiben. Stimmt die Anzahl nicht mit der Binär-ACL überein, bleibt `AceSddl` leer, statt falsch zugeordnet zu werden.
 
+### SID-Auflösung: Quelle immer nachvollziehbar
+
+SIDs werden in fester Reihenfolge aufgelöst: Kontodatenbank → Tabelle bekannter SIDs → bekannte Domänen-RID → SID-Bereich → nicht auflösbar. Der Kontotyp (`AccountType`) steht immer im Ergebnis, die Erläuterung bei bekannten SIDs in `AccountInfo`.
+
+```powershell
+# ❌ FALSCH - bekannte RID einer unbekannten Domäne als "verwaist" melden
+S-1-5-21-…-512                       Resolved = $false
+
+# ❌ FALSCH - stillschweigend so tun, als wäre die Domäne bekannt
+CONTOSO\Domain Admins                 (Domänenname geraten)
+
+# ✅ RICHTIG - benennen, aber die Unsicherheit sichtbar machen
+Domänen-Admins [Domäne unbekannt]     AccountInfo = 'Bekannte RID 512 einer nicht auflösbaren Domäne. …'
+```
+
+**Warum?** Die Frage „Ist das Konto gelöscht?“ entscheidet beim Aufräumen, ob ein Eintrag entfernt werden darf. Eine bekannte RID existiert in ihrer Domäne immer, also darf sie nicht als verwaist erscheinen. Den Domänennamen zu raten, wäre eine versteckte Transformation.
+
+`Translate()` aus .NET wurde durch `LookupAccountSid` ersetzt, weil nur diese API den Kontotyp liefert (SID_NAME_USE).
+
 ### Ordner standardmäßig, Dateien per Opt-in
 
 Bei `-Recurse` werden nur Ordner gelesen, Dateien nur mit `-IncludeFiles`. Das ist eine Einschränkung des Umfangs, keine versteckte: Der Parameter ist dokumentiert, und Dateien erben in der Praxis fast immer. Auf Freigaben mit hunderttausenden Dateien wäre der vollständige Lauf sonst unbrauchbar langsam.

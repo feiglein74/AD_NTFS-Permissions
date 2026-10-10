@@ -30,6 +30,8 @@
             Principal    = $who.Name
             Sid          = $who.Sid
             Resolved     = $who.Resolved
+            AccountType  = $who.AccountType
+            AccountInfo  = $who.Description
             Rights       = $rights.Summary
             RightsDetail = $rights.Detail -join ', '
             AccessMask   = '0x{0:X8}' -f $mask
@@ -87,8 +89,10 @@ function ConvertTo-NtfsPermissionItem {
         Owner              = $null
         OwnerSid           = $null
         OwnerResolved      = $false
+        OwnerType          = $null
         Group              = $null
         GroupSid           = $null
+        GroupType          = $null
         InheritanceEnabled = $null
         NullDacl           = $false
         IsCanonical        = $null
@@ -115,8 +119,10 @@ function ConvertTo-NtfsPermissionItem {
         $item.Owner = $owner.Name
         $item.OwnerSid = $owner.Sid
         $item.OwnerResolved = $owner.Resolved
+        $item.OwnerType = $owner.AccountType
         $item.Group = $group.Name
         $item.GroupSid = $group.Sid
+        $item.GroupType = $group.AccountType
         $item.InheritanceEnabled = ($ctl -band 0x1000) -eq 0                        # DiscretionaryAclProtected
         $item.NullDacl = (($ctl -band 0x0004) -ne 0) -and $null -eq $sd.DiscretionaryAcl   # DiscretionaryAclPresent
         $item.IsCanonical = Test-NtfsCanonical $aces

@@ -22,12 +22,12 @@ function Write-NtfsAceTable {
         return
     }
 
-    $headers = 'Typ', 'Konto', 'Rechte', 'Gilt für', 'Herkunft'
+    $headers = 'Typ', 'Konto', 'Kontotyp', 'Rechte', 'Gilt für', 'Herkunft'
     $rows = [System.Collections.Generic.List[object]]::new()
     foreach ($ace in $Aces) {
         $who = if ($ace.Resolved) { $ace.Principal } else { "$($ace.Principal) (?)" }
         $origin = if ($ace.Inherited) { 'geerbt' } else { 'explizit' }
-        $cells = @($ace.Type, $who, $ace.Rights, $ace.AppliesTo, $origin) | ForEach-Object { Limit-NtfsText $_ $Truncate }
+        $cells = @($ace.Type, $who, $ace.AccountType, $ace.Rights, $ace.AppliesTo, $origin) | ForEach-Object { Limit-NtfsText $_ $Truncate }
         $rows.Add(@($cells))
     }
 
@@ -97,10 +97,10 @@ function Write-NtfsItemHost {
     }
 
     if ($Item.OwnerResolved) {
-        Write-NtfsLabel -Label 'Besitzer' -Text $Item.Owner -Color White
+        Write-NtfsLabel -Label 'Besitzer' -Text "$($Item.Owner)  ($($Item.OwnerType))" -Color White
     }
     else {
-        Write-NtfsLabel -Label 'Besitzer' -Text "$($Item.Owner) (nicht auflösbar)" -Color Yellow
+        Write-NtfsLabel -Label 'Besitzer' -Text "$($Item.Owner)  ($($Item.OwnerType), nicht auflösbar)" -Color Yellow
     }
     if ($Item.InheritanceEnabled) {
         Write-NtfsLabel -Label 'Vererbung' -Text 'aktiv' -Color Green

@@ -145,7 +145,7 @@ function ConvertTo-NtfsHtml {
 
         $ownerCls = if ($item.OwnerResolved) { '' } else { ' class="bad"' }
         $inhText = if ($item.InheritanceEnabled) { 'aktiv' } else { '<b class="bad">deaktiviert</b>' }
-        $null = $sb.AppendLine("<p class=""facts""><span>Besitzer <b$ownerCls>$(& $e $item.Owner)</b></span><span>Vererbung $inhText</span><span>$($item.AceCount) Einträge</span></p>")
+        $null = $sb.AppendLine("<p class=""facts""><span>Besitzer <b$ownerCls>$(& $e $item.Owner)</b> ($(& $e $item.OwnerType))</span><span>Vererbung $inhText</span><span>$($item.AceCount) Einträge</span></p>")
         if ($item.Note) { $null = $sb.AppendLine("<p class=""note"">$(& $e $item.Note)</p>") }
 
         $null = $sb.AppendLine('<div class="table-wrap"><table><thead><tr><th>Typ</th><th>Konto</th><th>Rechte</th><th>Gilt für</th><th>Herkunft</th></tr></thead><tbody>')
@@ -153,9 +153,11 @@ function ConvertTo-NtfsHtml {
             $rc = @(if ($ace.IsDeny) { 'deny' } else { 'allow' })
             if ($ace.Inherited) { $rc += 'inherited' }
             if (-not $ace.Resolved) { $rc += 'unresolved' }
-            $sidLine = if (-not $ace.Resolved) { '<span class="sid">nicht auflösbar - verwaiste SID?</span>' }
-            elseif ($ace.Principal -like "*$($ace.Sid)*") { '' }
-            else { "<span class=""sid"">$(& $e $ace.Sid)</span>" }
+            # Zweite Zeile: Kontotyp · SID (wenn nicht schon im Namen) · Erläuterung
+            $sidParts = @($ace.AccountType)
+            if ($ace.Principal -notlike "*$($ace.Sid)*") { $sidParts += $ace.Sid }
+            if ($ace.AccountInfo) { $sidParts += $ace.AccountInfo }
+            $sidLine = "<span class=""sid"">$(& $e ($sidParts -join ' · '))</span>"
             $detail = if ($ace.Rights -like '*Spezial*') { "<span class=""detail"">$(& $e $ace.RightsDetail)</span>" } else { '' }
             $origin = if ($ace.Inherited) { 'geerbt' } else { 'explizit' }
             $null = $sb.AppendLine(("<tr class=""{0}""><td class=""type"">{1}</td><td class=""who"">{2}{3}</td><td title=""{4}"">{5}{6}</td><td>{7}</td><td>{8}</td></tr>" -f

@@ -25,6 +25,7 @@
 *.jpg binary
 *.jpeg binary
 *.gif binary
+*.tape text
 *.ico binary
 *.pdf binary
 *.zip binary

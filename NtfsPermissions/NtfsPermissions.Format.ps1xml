@@ -42,6 +42,7 @@
         <TableHeaders>
           <TableColumnHeader><Label>Typ</Label></TableColumnHeader>
           <TableColumnHeader><Label>Konto</Label></TableColumnHeader>
+          <TableColumnHeader><Label>Kontotyp</Label></TableColumnHeader>
           <TableColumnHeader><Label>Rechte</Label></TableColumnHeader>
           <TableColumnHeader><Label>Gilt für</Label></TableColumnHeader>
           <TableColumnHeader><Label>Geerbt</Label></TableColumnHeader>
@@ -51,6 +52,7 @@
             <TableColumnItems>
               <TableColumnItem><PropertyName>Type</PropertyName></TableColumnItem>
               <TableColumnItem><PropertyName>Principal</PropertyName></TableColumnItem>
+              <TableColumnItem><PropertyName>AccountType</PropertyName></TableColumnItem>
               <TableColumnItem><PropertyName>Rights</PropertyName></TableColumnItem>
               <TableColumnItem><PropertyName>AppliesTo</PropertyName></TableColumnItem>
               <TableColumnItem><PropertyName>Inherited</PropertyName></TableColumnItem>

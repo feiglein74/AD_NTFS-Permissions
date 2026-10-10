@@ -122,8 +122,8 @@ function Get-NtfsSddlBreakdown {
     $sp = Split-NtfsSddl $Item.Sddl
 
     $header = [System.Collections.Generic.List[object]]::new()
-    if ($sp.Owner) { $header.Add([pscustomobject]@{ Token = "O:$($sp.Owner)"; Label = 'Besitzer'; Meaning = $Item.Owner }) }
-    if ($sp.Group) { $header.Add([pscustomobject]@{ Token = "G:$($sp.Group)"; Label = 'Gruppe'; Meaning = $Item.Group }) }
+    if ($sp.Owner) { $header.Add([pscustomobject]@{ Token = "O:$($sp.Owner)"; Label = 'Besitzer'; Meaning = "$($Item.Owner)  ($($Item.OwnerType))" }) }
+    if ($sp.Group) { $header.Add([pscustomobject]@{ Token = "G:$($sp.Group)"; Label = 'Gruppe'; Meaning = "$($Item.Group)  ($($Item.GroupType))" }) }
     if ($sp.HasDacl) {
         $header.Add([pscustomobject]@{ Token = "D:$($sp.DaclFlags)"; Label = 'DACL'; Meaning = (ConvertFrom-NtfsAclFlag $sp.DaclFlags -Dacl) })
     }
@@ -160,7 +160,8 @@ function Get-NtfsSddlBreakdown {
 
         $who = $ace.Principal
         if ($s.Sid -notlike 'S-*') { $who += "  [$($ace.Sid)]" }
-        if (-not $ace.Resolved) { $who += '  (nicht auflösbar - verwaiste SID?)' }
+        $who += "  · $($ace.AccountType)"
+        if ($ace.AccountInfo) { $who += " - $($ace.AccountInfo)" }
         $parts.Add([pscustomobject]@{ Token = $s.Sid; Label = 'Konto'; Meaning = $who })
 
         if ($s.Condition) { $parts.Add([pscustomobject]@{ Token = $s.Condition; Label = 'Bedingung'; Meaning = 'Bedingter Ausdruck (Dynamic Access Control)' }) }
