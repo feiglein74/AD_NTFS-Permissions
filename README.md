@@ -1,5 +1,7 @@
 # NtfsPermissions – NTFS permission viewer & SDDL decoder for PowerShell
 
+[![CI](https://github.com/feiglein74/AD_NTFS-Permissions/actions/workflows/ci.yml/badge.svg)](https://github.com/feiglein74/AD_NTFS-Permissions/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/feiglein74/AD_NTFS-Permissions)](https://github.com/feiglein74/AD_NTFS-Permissions/releases)
 ![License](https://img.shields.io/github/license/feiglein74/AD_NTFS-Permissions)
 ![PowerShell](https://img.shields.io/badge/PowerShell-5.1%2B-5391FE?logo=powershell&logoColor=white)
 ![Platform](https://img.shields.io/badge/platform-Windows-0078D6)
