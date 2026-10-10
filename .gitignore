@@ -1,0 +1,15 @@
+# Claude Code (projekt-spezifischer Kontext, nicht für andere relevant)
+.claude/
+CLAUDE.md
+
+# Erzeugte Berichte/Exporte (enthalten Pfade und Kontonamen aus der Umgebung)
+*.html
+*.csv
+!docs/**/*.html
+
+# Pester / Editor
+testResults.xml
+coverage.xml
+.vscode/
+*.swp
+Thumbs.db

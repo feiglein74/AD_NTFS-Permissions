@@ -1,0 +1,32 @@
+# Default: Auto-Erkennung (Git entscheidet)
+* text=auto
+
+# Explizit Text (immer LF im Repo, native Zeilenenden beim Checkout)
+*.md text
+*.txt text
+*.json text
+*.yml text
+*.yaml text
+*.xml text
+*.html text
+*.css text
+*.js text
+*.ts text
+*.py text
+*.ps1 text
+*.psm1 text
+*.psd1 text
+*.ps1xml text
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Explizit Binär (keine Konvertierung)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.exe binary
+*.dll binary
